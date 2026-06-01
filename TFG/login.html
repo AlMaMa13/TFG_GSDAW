@@ -1,0 +1,34 @@
+<!-- 
+ USUARIOS PRUEBAS:
+ SUDO - sudo@correo.com - sudo1234 
+ ADMINISTRADOR - admin@correo.com - admin1234 
+ RASO - raso@correo.com - raso1234
+ -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login de Empresa</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+    <div class="login-container">
+        <header>
+            <div class="logo-wrapper">
+                <img src="Logotipo-blanco2-2048x1448.png" alt="Logo de la empresa">
+            </div>
+        </header>
+
+        <form action="procesar_acceso.php" method="POST" class="login-form" id="loginForm">
+            <input type="text" name="username" placeholder="Usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit" class="login-button">Entrar</button>
+        </form>
+    </div>
+
+</body>
+</html>
