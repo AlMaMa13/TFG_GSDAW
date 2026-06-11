@@ -1,5 +1,7 @@
 <?php
 
+//Destruir la sesión actual y redirigir al login
+
 session_start();
 
 //Vacío todas las variables de sesión en las que había guardado las credenciales del usuario

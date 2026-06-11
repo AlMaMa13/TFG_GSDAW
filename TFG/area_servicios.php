@@ -1,11 +1,16 @@
 <?php
+// ÁREA DE SERVICIOS: Panel principal de la aplicación
+
+// Inicio o reanudo la sesión del usuario
 session_start();
 
+// Si el usuario no ha iniciado sesión, lo redirijo al formulario de login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit();
 }
 
+// Obtengo el perfil del usuario desde la sesión para controlar permisos y mostrar sólo aquellas secciones a las que tenga acceso
 $perfil = $_SESSION['perfil'];
 ?>
 
@@ -24,37 +29,53 @@ $perfil = $_SESSION['perfil'];
     <div class="dashboard">
 
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <div class="logo-wrapper sidebar-logo-wrapper">
-                    <img src="Logotipo-blanco2-2048x1448.png" alt="Logo">
+
+            <div class="sidebar-top">
+                <div class="sidebar-logo">
+                    <div class="logo-wrapper sidebar-logo-wrapper">
+                        <img src="Logotipo-blanco2-2048x1448.png" alt="Logo">
+                    </div>
+                    <h2>ByteRed</h2>
                 </div>
-                <h2>ByteRed</h2>
+                <label for="nav-toggle" class="nav-toggle">&#9776;</label>
             </div>
 
-            <div class="sidebar-user">
-                <div class="user-avatar">
-                    <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
-                </div>
-                <div class="user-info">
-                    <span class="user-name"><?php echo $_SESSION['username']; ?></span>
-                    <span class="user-role role-<?php echo $perfil; ?>"><?php echo $perfil; ?></span>
-                </div>
-            </div>
+            <!-- Checkbox oculto que controla el despliegue del menú en responsive -->
+            <input type="checkbox" id="nav-toggle" class="nav-toggle-input" autocomplete="off">
+            
+            <div class="sidebar-dropdown">
 
-            <nav class="sidebar-nav">
-                <a href="area_servicios.php" class="active">Inicio</a>
-                <a href="ticket.php">Nuevo Ticket</a>
-                <a href="#">Mis Tickets</a>
-                <?php if ($perfil == 'administrador' || $perfil == 'sudo'): ?>
-                    <a href="#">Auditoría</a>
-                <?php endif; ?>
-                <?php if ($perfil == 'sudo'): ?>
-                    <a href="gestion_usuarios.php">Gestión de Usuarios</a>
-                <?php endif; ?>
-            </nav>
+                <div class="sidebar-user">
+                    <div class="user-avatar">
+                        <!-- Muestro la inicial del nombre de usuario en mayúscula -->
+                        <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
+                    </div>
+                    <div class="user-info">
+                        <!-- Muestro el nombre del usuario y su rol -->
+                        <span class="user-name"><?php echo $_SESSION['username']; ?></span>
+                        <span class="user-role role-<?php echo $perfil; ?>"><?php echo $perfil; ?></span>
+                    </div>
+                </div>
 
-            <div class="sidebar-footer">
-                <a href="logout.php" class="logout-link">Cerrar Sesión</a>
+                <nav class="sidebar-nav">
+                    <a href="area_servicios.php" class="active">Inicio</a>
+                    <a href="ticket.php">Nuevo Ticket</a>
+                    <a href="mis_tickets.php">Mis Tickets</a>
+                    <a href="scrum.php">Scrum</a>
+                    <!-- Enlace a Auditoría visible solo para los roles de ADMINISTRADOR y SUDO -->
+                    <?php if ($perfil == 'administrador' || $perfil == 'sudo'): ?>
+                        <a href="auditoria.php">Auditoría</a>
+                    <?php endif; ?>
+                    <!-- Enlace a Gestión de Usuarios visible solo para el rol de SUDO -->
+                    <?php if ($perfil == 'sudo'): ?>
+                        <a href="gestion_usuarios.php">Gestión de Usuarios</a>
+                    <?php endif; ?>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <a href="logout.php" class="logout-link">Cerrar Sesión</a>
+                </div>
+
             </div>
         </aside>
 
@@ -67,6 +88,7 @@ $perfil = $_SESSION['perfil'];
 
             <section class="modules-grid">
 
+                <!-- TICKETS: Visible para todos los roles -->
                 <?php if ($perfil == 'empleado' || $perfil == 'administrador' || $perfil == 'sudo'): ?>
                     <div class="card">
                         <div class="card-icon card-icon-tickets">
@@ -78,6 +100,17 @@ $perfil = $_SESSION['perfil'];
                     </div>
                 <?php endif; ?>
 
+                <!-- SCRUM: Visible para todos los roles -->
+                <div class="card">
+                    <div class="card-icon card-icon-scrum">
+                        <span>&#128200;</span>
+                    </div>
+                    <h3>SCRUM</h3>
+                    <p>Tablero de tareas con gestión de estados: por hacer, haciendo, por revisar, terminada.</p>
+                    <a href="scrum.php" class="card-btn">Acceder</a>
+                </div>
+
+                <!-- ADUITORÍAS: Visible solo para los roles de ADMINISTRADOR y SUDO -->
                 <?php if ($perfil == 'administrador' || $perfil == 'sudo'): ?>
                     <div class="card">
                         <div class="card-icon card-icon-auditoria">
@@ -85,10 +118,11 @@ $perfil = $_SESSION['perfil'];
                         </div>
                         <h3>AUDITORÍA</h3>
                         <p>Consultar documentación de auditorías realizadas.</p>
-                        <a href="#" class="card-btn">Acceder</a>
+                        <a href="auditoria.php" class="card-btn">Acceder</a>
                     </div>
                 <?php endif; ?>
 
+                <!-- GESTIÓN DE USUARIOS: Visible solo para el rol de SUDO -->
                 <?php if ($perfil == 'sudo'): ?>
                     <div class="card card-highlight">
                         <div class="card-icon card-icon-users">
@@ -99,14 +133,6 @@ $perfil = $_SESSION['perfil'];
                         <a href="gestion_usuarios.php" class="card-btn card-btn-warning">Acceder</a>
                     </div>
                 <?php endif; ?>
-
-                <!-- <div class="card card-placeholder">
-                    <div class="card-icon">
-                        <span>&#9881;&#65039;</span>
-                    </div>
-                    <h3>Más funciones próximamente</h3>
-                    <p>Nuevos módulos en desarrollo.</p>
-                </div> -->
 
             </section>
 
